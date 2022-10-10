@@ -1,7 +1,7 @@
 <template>
   <button @click="isOpen = true">Открыть</button>
   <Modal :is-open="isOpen" @close="isOpen = false" @ok="modalOK">
-    Данил бариев гей?
+    Учишь слоты?
     <template #actions="{ confirm }">
       <input :placeholder="$options.MODAL_TEXT" v-model="confirmation" />
       <button :disabled="!confirmed" @click="confirm">OK</button>
