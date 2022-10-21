@@ -1,6 +1,6 @@
 <template>
-  <button @click="isOpen = true">Открыть</button>
-  <Modal :is-open="isOpen" @close="isOpen = false" @ok="modalOK">
+  <button @click="openModal">Открыть</button>
+  <Modal ref="confirmationModal">
     Учишь слоты?
     <template #actions="{ confirm }">
       <input :placeholder="$options.MODAL_TEXT" v-model="confirmation" />
@@ -18,11 +18,15 @@ export default {
   },
   MODAL_TEXT: "ПОДТВЕРЖДАЮ",
   data() {
-    return { isOpen: false, confirmation: "" };
+    return { confirmation: "" };
   },
   methods: {
-    modalOK() {
-      alert("Вы правы!!!");
+    async openModal() {
+      this.confirmation = "";
+      const modalResult = await this.$refs.confirmationModal.open();
+      if (modalResult) {
+        alert("Confirmed");
+      }
     },
   },
   computed: {

@@ -7,9 +7,9 @@
       <hr />
       <div class="footer">
         <slot name="actions" :close="close" :confirm="confirm">
-          <button @click="confirm">OK</button>
-          &nbsp;
           <button @click="close">Отмена</button>
+          &nbsp;
+          <button @click="confirm">OK</button>
         </slot>
       </div>
     </div>
@@ -17,15 +17,11 @@
 </template>
 <script>
 export default {
-  props: {
-    isOpen: {
-      type: Boolean,
-      required: true,
-    },
-  },
-  emits: {
-    ok: null,
-    close: null,
+  currentModalController: null,
+  data() {
+    return {
+      isOpen: false,
+    };
   },
   mounted() {
     document.addEventListener("keydown", this.handleKeydown);
@@ -39,11 +35,25 @@ export default {
         this.close();
       }
     },
+    open() {
+      let resolve;
+      let reject;
+      const modalPromise = new Promise((ok, fail) => {
+        resolve = ok;
+        reject = fail;
+      });
+      this.$options.currentModalController = { resolve, reject };
+      this.isOpen = true;
+      return modalPromise;
+    },
     close() {
-      this.$emit("close");
+      this.$options.currentModalController.resolve(false);
+      console.log(this.$options.currentModalController);
+      this.isOpen = false;
     },
     confirm() {
-      this.$emit("ok");
+      this.$options.currentModalController.resolve(true);
+      this.isOpen = false;
     },
   },
 };
